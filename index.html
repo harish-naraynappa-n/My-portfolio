@@ -280,27 +280,41 @@
         });
 
         // Contact Form Submission
-        const contactForm = document.getElementById('contact-form');
-        const formResponse = document.getElementById('form-response');
+    const contactForm = document.getElementById('contact-form');
+    const formResponse = document.getElementById('form-response');
 
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // In a real application, you would send this data to a server.
-            // For this demo, we'll just show a success message.
-            const formData = new FormData(this);
-            const name = formData.get('name');
-            
-            formResponse.innerHTML = `Thank you, ${name}! Your message has been sent. I'll get back to you shortly.`;
-            formResponse.classList.remove('hidden', 'bg-red-500');
+    contactForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value
+        };
+
+        fetch('https://script.google.com/macros/s/AKfycbxgikK_wQJPU3IOVOXyGQRBITeIPmrJYGLb1j8cK6c83vKUG9aUbs0iYlNk4EU3H1l7/exec', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        }).then(() => {
+            formResponse.innerHTML = `Thank you, ${formData.name}! Your message has been sent.`;
+            formResponse.classList.remove('hidden');
             formResponse.classList.add('bg-green-500', 'text-white');
-            
-            this.reset();
-            
+
+            contactForm.reset();
+
             setTimeout(() => {
                 formResponse.classList.add('hidden');
             }, 5000);
+        }).catch(error => {
+            formResponse.innerHTML = `Oops! Something went wrong. Please try again.`;
+            formResponse.classList.remove('hidden');
+            formResponse.classList.add('bg-red-500', 'text-white');
         });
+    });
     </script>
 </body>
 </html>
